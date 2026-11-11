@@ -1,0 +1,237 @@
+#:kivy 2.3.0
+
+<CalcScreen>:
+    name: 'calc'
+    BoxLayout:
+        orientation: 'vertical'
+        canvas.before:
+            Color:
+                rgba: (0.063, 0.094, 0.153, 1) # --bg
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        ScrollView:
+            do_scroll_x: False
+            BoxLayout:
+                orientation: 'vertical'
+                size_hint_y: None
+                height: self.minimum_height
+                padding: [20, 16]
+                spacing: 12
+
+                # Botón Volver
+                Button:
+                    text: "‹  Volver"
+                    size_hint: (None, None)
+                    size: ('90dp', '32dp')
+                    background_normal: ''
+                    background_color: (0, 0, 0, 0)
+                    color: (0.545, 0.718, 1.0, 1)
+                    font_size: '15sp'
+                    bold: True
+                    on_release: app.go_back()
+
+                # Encabezado
+                Label:
+                    text: "[b]Calculadora académica[/b]"
+                    markup: True
+                    font_size: '24sp'
+                    color: (0.957, 0.965, 0.980, 1)
+                    halign: 'left'
+                    valign: 'middle'
+                    size_hint_y: None
+                    height: '32dp'
+                    text_size: self.size
+
+                Label:
+                    text: "Sin cuenta ni materias registradas"
+                    font_size: '13sp'
+                    color: (0.627, 0.682, 0.753, 1)
+                    halign: 'left'
+                    valign: 'top'
+                    size_hint_y: None
+                    height: '20dp'
+                    text_size: self.size
+
+                # Parámetros de Escala
+                DarkCard:
+                    GridLayout:
+                        cols: 3
+                        size_hint_y: None
+                        height: '62dp'
+                        spacing: 8
+
+                        BoxLayout:
+                            orientation: 'vertical'
+                            spacing: 4
+                            Label:
+                                text: "Nota máx."
+                                font_size: '11sp'
+                                color: (0.627, 0.682, 0.753, 1)
+                                size_hint_y: None
+                                height: '16dp'
+                            StyledTextInput:
+                                text: str(root.scale_max)
+                                input_filter: 'float'
+                                on_text: root.scale_max = float(self.text or 10.0); root.calculate_results()
+
+                        BoxLayout:
+                            orientation: 'vertical'
+                            spacing: 4
+                            Label:
+                                text: "Mínima"
+                                font_size: '11sp'
+                                color: (0.627, 0.682, 0.753, 1)
+                                size_hint_y: None
+                                height: '16dp'
+                            StyledTextInput:
+                                text: str(root.scale_min)
+                                input_filter: 'float'
+                                on_text: root.scale_min = float(self.text or 7.0); root.calculate_results()
+
+                        BoxLayout:
+                            orientation: 'vertical'
+                            spacing: 4
+                            Label:
+                                text: "Objetivo"
+                                font_size: '11sp'
+                                color: (0.627, 0.682, 0.753, 1)
+                                size_hint_y: None
+                                height: '16dp'
+                            StyledTextInput:
+                                text: str(root.scale_goal)
+                                input_filter: 'float'
+                                on_text: root.scale_goal = float(self.text or 8.5); root.calculate_results()
+
+                # Lista de Notas
+                BoxLayout:
+                    id: grades_container
+                    orientation: 'vertical'
+                    size_hint_y: None
+                    height: self.minimum_height
+                    spacing: 8
+
+                GhostButton:
+                    text: "+ Agregar nota"
+                    on_release: root.add_grade()
+
+                # Campo Simulación
+                DarkCard:
+                    Label:
+                        text: "Simular nota promedio en lo pendiente (no se guarda)"
+                        font_size: '12sp'
+                        color: (0.627, 0.682, 0.753, 1)
+                        size_hint_y: None
+                        height: '18dp'
+                        halign: 'left'
+                        text_size: self.size
+                    StyledTextInput:
+                        hint_text: "Ej.: 9.0"
+                        text: root.sim_grade_text
+                        input_filter: 'float'
+                        on_text: root.sim_grade_text = self.text; root.calculate_results()
+
+                # Bloque de Resultados
+                DarkCard:
+                    # Alerta si pesos > 100
+                    Label:
+                        text: f"[color=f2a65a][b]{root.warning_text}[/b][/color]" if root.warning_text else ""
+                        markup: True
+                        size_hint_y: None
+                        height: '24dp' if root.warning_text else '0dp'
+                        opacity: 1 if root.warning_text else 0
+
+                    BoxLayout:
+                        size_hint_y: None
+                        height: '32dp'
+                        Label:
+                            text: f"Evaluado: [b]{root.evaluated_text}[/b]"
+                            markup: True
+                            color: (0.627, 0.682, 0.753, 1)
+                            font_size: '13sp'
+                            halign: 'left'
+                            text_size: self.size
+                        Label:
+                            text: f"Pendiente: [b]{root.pending_text}[/b]"
+                            markup: True
+                            color: (0.627, 0.682, 0.753, 1)
+                            font_size: '13sp'
+                            halign: 'right'
+                            text_size: self.size
+
+                    BoxLayout:
+                        size_hint_y: None
+                        height: '34dp'
+                        Label:
+                            text: "Promedio ponderado actual"
+                            color: (0.627, 0.682, 0.753, 1)
+                            font_size: '13sp'
+                            halign: 'left'
+                            text_size: self.size
+                        Label:
+                            text: f"[color=8bb7ff][b]{root.current_avg_text}[/b][/color]"
+                            markup: True
+                            font_size: '20sp'
+                            halign: 'right'
+                            size_hint_x: None
+                            width: '80dp'
+                            text_size: self.size
+
+                    Label:
+                        text: f"Puntos acumulados: {root.accum_pts_text}"
+                        color: (0.627, 0.682, 0.753, 1)
+                        font_size: '12sp'
+                        size_hint_y: None
+                        height: '18dp'
+                        halign: 'left'
+                        text_size: self.size
+
+                    Label:
+                        text: f"Máxima nota final posible: [b]{root.max_possible_text}[/b]"
+                        markup: True
+                        color: (0.957, 0.965, 0.980, 1)
+                        font_size: '13sp'
+                        size_hint_y: None
+                        height: '22dp'
+                        halign: 'left'
+                        text_size: self.size
+
+                    Label:
+                        text: f"[color=39c98a]{root.goal_status_text}[/color]"
+                        markup: True
+                        font_size: '12sp'
+                        size_hint_y: None
+                        height: '22dp'
+                        halign: 'left'
+                        text_size: self.size
+
+                    Label:
+                        text: f"[color=f2a65a]{root.min_status_text}[/color]"
+                        markup: True
+                        font_size: '12sp'
+                        size_hint_y: None
+                        height: '22dp'
+                        halign: 'left'
+                        text_size: self.size
+
+                    Label:
+                        text: root.sim_result_text
+                        color: (0.545, 0.718, 1.0, 1)
+                        font_size: '12sp'
+                        size_hint_y: None
+                        height: '32dp' if root.sim_result_text else '0dp'
+                        opacity: 1 if root.sim_result_text else 0
+                        halign: 'left'
+                        valign: 'middle'
+                        text_size: self.size
+
+                PrimaryButton:
+                    text: "Calcular resultados"
+                    on_release: root.calculate_results()
+
+                GhostButton:
+                    text: "Restablecer ejemplo"
+                    on_release: root.reset_example()
+
+        NavBar:

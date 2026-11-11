@@ -1,0 +1,176 @@
+#:kivy 2.3.0
+
+<ScheduleScreen>:
+    name: 'schedule'
+    BoxLayout:
+        orientation: 'vertical'
+        canvas.before:
+            Color:
+                rgba: (0.063, 0.094, 0.153, 1) # --bg
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        ScrollView:
+            do_scroll_x: False
+            BoxLayout:
+                orientation: 'vertical'
+                size_hint_y: None
+                height: self.minimum_height
+                padding: [20, 16]
+                spacing: 12
+
+                # Encabezado
+                Label:
+                    text: "[b]Horario semanal[/b]"
+                    markup: True
+                    font_size: '24sp'
+                    color: (0.957, 0.965, 0.980, 1)
+                    halign: 'left'
+                    valign: 'middle'
+                    size_hint_y: None
+                    height: '32dp'
+                    text_size: self.size
+
+                # Selector de Semanas
+                BoxLayout:
+                    size_hint_y: None
+                    height: '36dp'
+                    Button:
+                        text: "‹"
+                        font_size: '20sp'
+                        size_hint_x: None
+                        width: '40dp'
+                        background_normal: ''
+                        background_color: (0, 0, 0, 0)
+                        color: (0.545, 0.718, 1.0, 1)
+                        on_release: root.prev_week()
+
+                    Label:
+                        text: f"[b]{root.week_range_text}[/b]"
+                        markup: True
+                        font_size: '14sp'
+                        color: (0.957, 0.965, 0.980, 1)
+                        halign: 'center'
+                        valign: 'middle'
+
+                    Button:
+                        text: "›"
+                        font_size: '20sp'
+                        size_hint_x: None
+                        width: '40dp'
+                        background_normal: ''
+                        background_color: (0, 0, 0, 0)
+                        color: (0.545, 0.718, 1.0, 1)
+                        on_release: root.next_week()
+
+                # Chips de Días (Lunes a Viernes)
+                BoxLayout:
+                    size_hint_y: None
+                    height: '52dp'
+                    spacing: 6
+
+                    Button:
+                        text: "Lun\n2"
+                        font_size: '12sp'
+                        halign: 'center'
+                        background_normal: ''
+                        background_color: (0.337, 0.537, 0.910, 1) if root.current_day_idx == 0 else (0.106, 0.149, 0.220, 1)
+                        color: (0.063, 0.094, 0.153, 1) if root.current_day_idx == 0 else (0.627, 0.682, 0.753, 1)
+                        bold: True
+                        on_release: root.select_day(0)
+
+                    Button:
+                        text: "Mar\n3"
+                        font_size: '12sp'
+                        halign: 'center'
+                        background_normal: ''
+                        background_color: (0.337, 0.537, 0.910, 1) if root.current_day_idx == 1 else (0.106, 0.149, 0.220, 1)
+                        color: (0.063, 0.094, 0.153, 1) if root.current_day_idx == 1 else (0.627, 0.682, 0.753, 1)
+                        bold: True
+                        on_release: root.select_day(1)
+
+                    Button:
+                        text: "Mié\n4"
+                        font_size: '12sp'
+                        halign: 'center'
+                        background_normal: ''
+                        background_color: (0.337, 0.537, 0.910, 1) if root.current_day_idx == 2 else (0.106, 0.149, 0.220, 1)
+                        color: (0.063, 0.094, 0.153, 1) if root.current_day_idx == 2 else (0.627, 0.682, 0.753, 1)
+                        bold: True
+                        on_release: root.select_day(2)
+
+                    Button:
+                        text: "Jue\n5"
+                        font_size: '12sp'
+                        halign: 'center'
+                        background_normal: ''
+                        background_color: (0.337, 0.537, 0.910, 1) if root.current_day_idx == 3 else (0.106, 0.149, 0.220, 1)
+                        color: (0.063, 0.094, 0.153, 1) if root.current_day_idx == 3 else (0.627, 0.682, 0.753, 1)
+                        bold: True
+                        on_release: root.select_day(3)
+
+                    Button:
+                        text: "Vie\n6"
+                        font_size: '12sp'
+                        halign: 'center'
+                        background_normal: ''
+                        background_color: (0.337, 0.537, 0.910, 1) if root.current_day_idx == 4 else (0.106, 0.149, 0.220, 1)
+                        color: (0.063, 0.094, 0.153, 1) if root.current_day_idx == 4 else (0.627, 0.682, 0.753, 1)
+                        bold: True
+                        on_release: root.select_day(4)
+
+                # Contenedor de clases
+                BoxLayout:
+                    id: classes_container
+                    orientation: 'vertical'
+                    size_hint_y: None
+                    height: self.minimum_height
+                    spacing: 8
+
+                # Botón Agregar Clase
+                GhostButton:
+                    text: "+ Agregar clase"
+                    on_release: root.open_class_modal(-1)
+
+                # Botón Importar Foto con estilo especial
+                Button:
+                    size_hint_y: None
+                    height: '56dp'
+                    background_normal: ''
+                    background_color: (0.106, 0.149, 0.220, 1)
+                    color: (0.545, 0.718, 1.0, 1)
+                    bold: True
+                    text: "📷  Importar foto del horario\n[size=11sp][color=a0aec0]Reconocimiento automático y revisión[/color][/size]"
+                    markup: True
+                    halign: 'center'
+                    on_release: root.go_import()
+
+                # Tarjeta Notificaciones de clase
+                DarkCard:
+                    BoxLayout:
+                        size_hint_y: None
+                        height: '32dp'
+                        Label:
+                            text: "[b]Recordatorios de clase[/b]"
+                            markup: True
+                            font_size: '14sp'
+                            halign: 'left'
+                            text_size: self.size
+                        Switch:
+                            active: root.class_reminder_active
+                            size_hint_x: None
+                            width: '80dp'
+                            on_active: root.toggle_reminder()
+
+                    Label:
+                        text: "Te avisaremos 30 minutos antes de cada clase." if root.class_reminder_active else "Notificaciones de clase desactivadas."
+                        font_size: '12sp'
+                        color: (0.627, 0.682, 0.753, 1)
+                        halign: 'left'
+                        valign: 'middle'
+                        size_hint_y: None
+                        height: '20dp'
+                        text_size: self.size
+
+        NavBar:

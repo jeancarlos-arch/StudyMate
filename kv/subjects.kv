@@ -1,0 +1,58 @@
+#:kivy 2.3.0
+
+<SubjectsScreen>:
+    name: 'subjects'
+    BoxLayout:
+        orientation: 'vertical'
+        canvas.before:
+            Color:
+                rgba: (0.063, 0.094, 0.153, 1) # --bg
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        ScrollView:
+            do_scroll_x: False
+            BoxLayout:
+                orientation: 'vertical'
+                size_hint_y: None
+                height: self.minimum_height
+                padding: [20, 16]
+                spacing: 12
+
+                # Encabezado
+                Label:
+                    text: "[b]Mis materias[/b]"
+                    markup: True
+                    font_size: '24sp'
+                    color: (0.957, 0.965, 0.980, 1)
+                    halign: 'left'
+                    valign: 'middle'
+                    size_hint_y: None
+                    height: '32dp'
+                    text_size: self.size
+
+                Label:
+                    text: root.subtitle_text
+                    font_size: '13sp'
+                    color: (0.627, 0.682, 0.753, 1)
+                    halign: 'left'
+                    valign: 'top'
+                    size_hint_y: None
+                    height: '20dp'
+                    text_size: self.size
+
+                # Lista dinámica de materias
+                BoxLayout:
+                    id: subjects_container
+                    orientation: 'vertical'
+                    size_hint_y: None
+                    height: self.minimum_height
+                    spacing: 10
+
+                # Botón Agregar Materia
+                GhostButton:
+                    text: "+ Agregar materia"
+                    on_release: root.add_subject_prompt()
+
+        NavBar:

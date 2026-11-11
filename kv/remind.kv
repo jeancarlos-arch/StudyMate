@@ -1,0 +1,74 @@
+#:kivy 2.3.0
+
+<RemindScreen>:
+    name: 'remind'
+    BoxLayout:
+        orientation: 'vertical'
+        canvas.before:
+            Color:
+                rgba: (0.063, 0.094, 0.153, 1) # --bg
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        ScrollView:
+            do_scroll_x: False
+            BoxLayout:
+                orientation: 'vertical'
+                size_hint_y: None
+                height: self.minimum_height
+                padding: [20, 16]
+                spacing: 12
+
+                # Botón Volver
+                Button:
+                    text: "‹  Volver"
+                    size_hint: (None, None)
+                    size: ('90dp', '32dp')
+                    background_normal: ''
+                    background_color: (0, 0, 0, 0)
+                    color: (0.545, 0.718, 1.0, 1)
+                    font_size: '15sp'
+                    bold: True
+                    on_release: app.go_back()
+
+                # Encabezado
+                Label:
+                    text: "[b]Recordatorios[/b]"
+                    markup: True
+                    font_size: '24sp'
+                    color: (0.957, 0.965, 0.980, 1)
+                    halign: 'left'
+                    valign: 'middle'
+                    size_hint_y: None
+                    height: '32dp'
+                    text_size: self.size
+
+                Label:
+                    text: "Clases, deberes, lecciones y entregas"
+                    font_size: '13sp'
+                    color: (0.627, 0.682, 0.753, 1)
+                    halign: 'left'
+                    valign: 'top'
+                    size_hint_y: None
+                    height: '20dp'
+                    text_size: self.size
+
+                # Contenedor de recordatorios
+                BoxLayout:
+                    id: reminders_container
+                    orientation: 'vertical'
+                    size_hint_y: None
+                    height: self.minimum_height
+                    spacing: 8
+
+                Label:
+                    text: "Toca un elemento para configurar su recordatorio."
+                    font_size: '12sp'
+                    color: (0.627, 0.682, 0.753, 1)
+                    halign: 'left'
+                    size_hint_y: None
+                    height: '24dp'
+                    text_size: self.size
+
+        NavBar:

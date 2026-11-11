@@ -1,0 +1,257 @@
+#:kivy 2.3.0
+
+<ProgressScreen>:
+    name: 'progress'
+    BoxLayout:
+        orientation: 'vertical'
+        canvas.before:
+            Color:
+                rgba: (0.063, 0.094, 0.153, 1) # --bg
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        ScrollView:
+            do_scroll_x: False
+            BoxLayout:
+                orientation: 'vertical'
+                size_hint_y: None
+                height: self.minimum_height
+                padding: [20, 16]
+                spacing: 12
+
+                # Botón Volver
+                Button:
+                    text: "‹  Volver"
+                    size_hint: (None, None)
+                    size: ('90dp', '32dp')
+                    background_normal: ''
+                    background_color: (0, 0, 0, 0)
+                    color: (0.545, 0.718, 1.0, 1)
+                    font_size: '15sp'
+                    bold: True
+                    on_release: app.go_back()
+
+                # Encabezado
+                Label:
+                    text: "[b]Tu progreso[/b]"
+                    markup: True
+                    font_size: '24sp'
+                    color: (0.957, 0.965, 0.980, 1)
+                    halign: 'left'
+                    valign: 'middle'
+                    size_hint_y: None
+                    height: '32dp'
+                    text_size: self.size
+
+                Label:
+                    text: "Estás construyendo un gran semestre"
+                    font_size: '13sp'
+                    color: (0.627, 0.682, 0.753, 1)
+                    halign: 'left'
+                    valign: 'top'
+                    size_hint_y: None
+                    height: '20dp'
+                    text_size: self.size
+
+                # Fila de 3 Métricas
+                GridLayout:
+                    cols: 3
+                    size_hint_y: None
+                    height: '76dp'
+                    spacing: 8
+
+                    DarkCard:
+                        padding: 6
+                        Label:
+                            text: f"[color=8bb7ff][b]{root.general_avg_text}[/b][/color]"
+                            markup: True
+                            font_size: '18sp'
+                            halign: 'center'
+                        Label:
+                            text: "Promedio"
+                            color: (0.627, 0.682, 0.753, 1)
+                            font_size: '11sp'
+                            halign: 'center'
+
+                    DarkCard:
+                        padding: 6
+                        Label:
+                            text: f"[color=39c98a][b]{root.semester_adv_text}[/b][/color]"
+                            markup: True
+                            font_size: '18sp'
+                            halign: 'center'
+                        Label:
+                            text: "Avance"
+                            color: (0.627, 0.682, 0.753, 1)
+                            font_size: '11sp'
+                            halign: 'center'
+
+                    DarkCard:
+                        padding: 6
+                        Label:
+                            text: f"[color=f2a65a][b]{root.goals_met_text}[/b][/color]"
+                            markup: True
+                            font_size: '16sp'
+                            halign: 'center'
+                        Label:
+                            text: "Metas"
+                            color: (0.627, 0.682, 0.753, 1)
+                            font_size: '11sp'
+                            halign: 'center'
+
+                # Gráfico de Evolución del promedio
+                DarkCard:
+                    Label:
+                        text: "[b]Evolución del promedio[/b]"
+                        markup: True
+                        font_size: '14sp'
+                        halign: 'left'
+                        size_hint_y: None
+                        height: '24dp'
+                        text_size: self.size
+
+                    BoxLayout:
+                        size_hint_y: None
+                        height: '110dp'
+                        spacing: 20
+                        padding: [10, 4]
+
+                        # Barra Parcial 1
+                        BoxLayout:
+                            orientation: 'vertical'
+                            spacing: 4
+                            Label:
+                                text: "7.80"
+                                font_size: '11sp'
+                                size_hint_y: None
+                                height: '16dp'
+                            Widget:
+                                canvas:
+                                    Color:
+                                        rgba: (0.337, 0.537, 0.910, 1)
+                                    RoundedRectangle:
+                                        pos: (self.x + dp(6), self.y)
+                                        size: (self.width - dp(12), dp(root.p1_height))
+                                        radius: [dp(4), dp(4), 0, 0]
+                            Label:
+                                text: "Parcial 1"
+                                color: (0.627, 0.682, 0.753, 1)
+                                font_size: '11sp'
+                                size_hint_y: None
+                                height: '16dp'
+
+                        # Barra Parcial 2
+                        BoxLayout:
+                            orientation: 'vertical'
+                            spacing: 4
+                            Label:
+                                text: "8.20"
+                                font_size: '11sp'
+                                size_hint_y: None
+                                height: '16dp'
+                            Widget:
+                                canvas:
+                                    Color:
+                                        rgba: (0.337, 0.537, 0.910, 1)
+                                    RoundedRectangle:
+                                        pos: (self.x + dp(6), self.y)
+                                        size: (self.width - dp(12), dp(root.p2_height))
+                                        radius: [dp(4), dp(4), 0, 0]
+                            Label:
+                                text: "Parcial 2"
+                                color: (0.627, 0.682, 0.753, 1)
+                                font_size: '11sp'
+                                size_hint_y: None
+                                height: '16dp'
+
+                        # Barra Actual
+                        BoxLayout:
+                            orientation: 'vertical'
+                            spacing: 4
+                            Label:
+                                text: root.general_avg_text
+                                font_size: '11sp'
+                                size_hint_y: None
+                                height: '16dp'
+                            Widget:
+                                canvas:
+                                    Color:
+                                        rgba: (0.224, 0.788, 0.541, 1)
+                                    RoundedRectangle:
+                                        pos: (self.x + dp(6), self.y)
+                                        size: (self.width - dp(12), dp(root.current_height))
+                                        radius: [dp(4), dp(4), 0, 0]
+                            Label:
+                                text: "Actual"
+                                color: (0.627, 0.682, 0.753, 1)
+                                font_size: '11sp'
+                                size_hint_y: None
+                                height: '16dp'
+
+                # Fila de Mejor Rendimiento vs Atención
+                GridLayout:
+                    cols: 2
+                    size_hint_y: None
+                    height: '84dp'
+                    spacing: 10
+
+                    DarkCard:
+                        padding: 8
+                        Label:
+                            text: "Mejor rendimiento"
+                            font_size: '11sp'
+                            color: (0.627, 0.682, 0.753, 1)
+                            halign: 'left'
+                            text_size: self.size
+                        Label:
+                            text: f"[b]{root.best_subject_name}[/b]"
+                            markup: True
+                            font_size: '13sp'
+                            halign: 'left'
+                            text_size: self.size
+                        Label:
+                            text: f"[color=39c98a][b]{root.best_subject_score}[/b][/color]"
+                            markup: True
+                            font_size: '14sp'
+                            halign: 'left'
+                            text_size: self.size
+
+                    DarkCard:
+                        padding: 8
+                        Label:
+                            text: "Merece atención"
+                            font_size: '11sp'
+                            color: (0.627, 0.682, 0.753, 1)
+                            halign: 'left'
+                            text_size: self.size
+                        Label:
+                            text: f"[b]{root.focus_subject_name}[/b]"
+                            markup: True
+                            font_size: '13sp'
+                            halign: 'left'
+                            text_size: self.size
+                        Label:
+                            text: f"[color=f2a65a][b]{root.focus_subject_score}[/b][/color]"
+                            markup: True
+                            font_size: '14sp'
+                            halign: 'left'
+                            text_size: self.size
+
+                # Tarjeta Motivacional
+                DarkCard:
+                    Label:
+                        text: "Reconocemos tu constancia: cada deber y cada repaso suman. ¡Sigue a tu ritmo!"
+                        color: (0.224, 0.788, 0.541, 1)
+                        font_size: '13sp'
+                        halign: 'left'
+                        valign: 'middle'
+                        size_hint_y: None
+                        height: '42dp'
+                        text_size: self.size
+
+                PrimaryButton:
+                    text: "Consultar logros"
+                    on_release: root.show_achievements()
+
+        NavBar:

@@ -1,0 +1,70 @@
+#:kivy 2.3.0
+
+<WelcomeScreen>:
+    name: 'welcome'
+    BoxLayout:
+        orientation: 'vertical'
+        padding: [24, 40]
+        spacing: 20
+        canvas.before:
+            Color:
+                rgba: (0.063, 0.094, 0.153, 1) # --bg
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        Widget:
+            size_hint_y: 0.15
+
+        # Logotipo / Isotipo
+        BoxLayout:
+            orientation: 'vertical'
+            size_hint_y: None
+            height: '110dp'
+            Label:
+                text: "🎓"
+                font_size: '72sp'
+                halign: 'center'
+                valign: 'middle'
+
+        # Título
+        Label:
+            text: "[b]StudyMate[/b]"
+            markup: True
+            font_size: '34sp'
+            color: (0.957, 0.965, 0.980, 1)
+            size_hint_y: None
+            height: '46dp'
+            halign: 'center'
+
+        # Descripción
+        Label:
+            text: "Tu acompañante académico: horario,\nnotas y motivación en un solo lugar."
+            font_size: '15sp'
+            color: (0.627, 0.682, 0.753, 1)
+            halign: 'center'
+            valign: 'middle'
+            size_hint_y: None
+            height: '50dp'
+
+        Widget:
+            size_hint_y: 0.25
+
+        # Botón Comenzar
+        PrimaryButton:
+            text: "Comenzar"
+            on_release: root.go_home()
+
+        # Botón Calculadora sin cuenta
+        Button:
+            text: "Solo usar la calculadora, sin cuenta"
+            size_hint_y: None
+            height: '44dp'
+            background_normal: ''
+            background_color: (0, 0, 0, 0)
+            color: (0.545, 0.718, 1.0, 1)
+            font_size: '14sp'
+            on_release: root.go_calc()
+
+        Widget:
+            size_hint_y: 0.1
