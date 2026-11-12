@@ -31,6 +31,7 @@ from screens.progress_screen import ProgressScreen
 from screens.diary_screen import DiaryScreen
 from screens.remind_screen import RemindScreen
 from screens.profile_screen import ProfileScreen
+from screens.login_screen import LoginScreen
 
 
 # Componentes y estilos globales en KV
@@ -180,137 +181,72 @@ GLOBAL_KV = """
         on_release: app.go_screen('schedule', clear_history=True)
 
     Button:
-        text: "👤\\nPerfil"
+        text: "🔢\\nCalculadora"
         halign: 'center'
         font_size: '11sp'
         background_normal: ''
         background_color: (0, 0, 0, 0)
-        color: (0.545, 0.718, 1.0, 1) if app.active_tab == 'profile' else (0.627, 0.682, 0.753, 1)
-        bold: app.active_tab == 'profile'
-        on_release: app.go_screen('profile', clear_history=True)
+        color: (0.545, 0.718, 1.0, 1) if app.active_tab == 'calc' else (0.627, 0.682, 0.753, 1)
+        bold: app.active_tab == 'calc'
+        on_release: app.go_screen('calc', clear_history=True)
 """
 
 
 class DataStore:
     """Almacén central del estado académico de StudyMate"""
     def __init__(self):
-        # Materias del semestre
-        self.subjects = [
-            {'n': 'Cálculo Diferencial', 'a': 8.4, 'p': 70},
-            {'n': 'Programación II', 'a': 9.1, 'p': 85},
-            {'n': 'Física General', 'ph': 1},
-            {'n': 'Inglés Técnico', 'a': 9.5, 'p': 40}
-        ]
+        # Datos del perfil del estudiante
+        self.student_name = ""
+        self.student_career = ""
+        self.student_semester = ""
+        self.is_logged_in = False
 
-        # Categorías y evaluaciones para la materia con seguimiento detallado
-        self.categories = [
-            {'n': 'Deberes', 'w': 20, 'm': 'a', 'it': [{'n': 'Deber 1', 'g': 8.5}, {'n': 'Deber 2', 'g': 9.0}, {'n': 'Deber 3', 'g': 7.5}]},
-            {'n': 'Lecciones', 'w': 15, 'm': 'a', 'it': [{'n': 'Lección 1', 'g': 6.0}, {'n': 'Lección 2', 'g': 8.0}]},
-            {'n': 'Proyecto', 'w': 20, 'm': 'a', 'it': [{'n': 'Proyecto final', 'g': 7.0}]},
-            {'n': 'Examen final', 'w': 45, 'm': 'a', 'it': []}
-        ]
+        # Materias del semestre (inicia vacío sin datos quemados)
+        self.subjects = []
 
-        self.pmin = 7.0
-        self.pgoal = 8.5
-        self.teacher = 'Prof. Andrade'
-        self.active_subject = 'Física General'
+        # Horario semanal (0: Lunes a 4: Viernes) -> Inicia vacío
+        self.schedule = [[], [], [], [], []]
 
-        # Horario semanal (0: Lunes a 4: Viernes)
-        self.schedule = [
-            [
-                {'n': 'Cálculo Diferencial', 'h': '08:00 – 10:00', 'a': 'B-204'},
-                {'n': 'Programación II', 'h': '10:30 – 12:30', 'a': 'Lab 3'},
-                {'n': 'Física General', 'h': '14:00 – 16:00', 'a': 'A-110'}
-            ],
-            [
-                {'n': 'Inglés Técnico', 'h': '09:00 – 11:00', 'a': 'C-301'},
-                {'n': 'Programación II', 'h': '11:30 – 13:30', 'a': 'Lab 3'}
-            ],
-            [
-                {'n': 'Cálculo Diferencial', 'h': '08:00 – 10:00', 'a': 'B-204'}
-            ],
-            [
-                {'n': 'Física General', 'h': '08:00 – 10:00', 'a': 'A-110'}
-            ],
-            []
-        ]
+        # Materia activa seleccionada para detalle
+        self.active_subject = ""
 
-        # Recordatorios
-        self.reminders = [
-            {'t': 'Clase de Física General', 'd': 'Hoy · 14:00', 'on': 1, 'm': 30},
-            {'t': 'Deber 4 de Programación II', 'd': 'Hoy · 20:00', 'on': 1, 'm': 60},
-            {'t': 'Lección 3 de Física General', 'd': 'Mié 4 nov · 10:00', 'on': 1, 'm': 30},
-            {'t': 'Examen parcial de Cálculo', 'd': 'Vie 6 nov · 08:00', 'on': 1, 'm': 1440},
-            {'t': 'Entrega del proyecto de Inglés', 'd': 'Lun 9 nov · 23:59', 'on': 0, 'm': 60}
-        ]
-
-        # Diario de reflexión
-        self.diary_entries = [
-            {
-                'd': '1 nov 2026',
-                'v': [
-                    'Un domingo tranquilo para repasar.',
-                    'Cómo aplicar la regla de la cadena.',
-                    'Mantener la atención en las tardes.',
-                    'Estudiar en bloques de 25 minutos.',
-                    'Terminé el repaso de Cálculo.'
-                ]
-            },
-            {
-                'd': '30 oct 2026',
-                'v': [
-                    'Día intenso, pero salió bien.',
-                    'Estructuras de datos básicas.',
-                    'El laboratorio de Programación.',
-                    'Pedir ayuda antes.',
-                    'Entregué el deber a tiempo.'
-                ]
-            }
-        ]
-
-        self.diary_questions = [
-            '¿Cómo te fue hoy?',
-            '¿Qué aprendiste?',
-            '¿Qué te costó?',
-            '¿Qué quieres mejorar?',
-            '¿Cuál fue tu pequeño logro?'
-        ]
-
+        # Notificaciones y configuraciones
         self.global_notifications = True
+        self.reminders = []
+        self.diary_entries = []
 
-    def calc_categories(self):
+    def get_active_subject_obj(self):
+        for s in self.subjects:
+            if s.get('n') == self.active_subject:
+                return s
+        return None
+
+    def calc_categories_for(self, cat_list):
         pts = 0.0
         ev = 0.0
         tot = 0.0
-        for c in self.categories:
-            if c.get('m') == 'a':
-                tot += c.get('w', 0)
-                graded = [it for it in c.get('it', []) if it.get('g') is not None]
-                if graded:
-                    avg = sum(it['g'] for it in graded) / len(graded)
-                    pts += avg * c.get('w', 0) / 100.0
-                    ev += c.get('w', 0)
-            else:
-                for it in c.get('it', []):
-                    tot += it.get('w', 0)
-                    if it.get('g') is not None:
-                        pts += it['g'] * it.get('w', 0) / 100.0
-                        ev += it.get('w', 0)
-        return {'pts': pts, 'ev': ev, 'tot': tot, 'pend': tot - ev}
-
-    def get_categories_avg(self):
-        k = self.calc_categories()
-        return (k['pts'] / k['ev'] * 100.0) if k['ev'] > 0 else 0.0
+        for c in cat_list:
+            w = float(c.get('w', 0))
+            tot += w
+            graded = [it for it in c.get('it', []) if it.get('g') is not None]
+            if graded:
+                avg = sum(float(it['g']) for it in graded) / len(graded)
+                pts += avg * w / 100.0
+                ev += w
+        return {'pts': pts, 'ev': ev, 'tot': tot, 'pend': max(0.0, 100.0 - ev)}
 
     def get_subject_avg(self, subj):
-        if subj.get('ph'):
-            return self.get_categories_avg()
-        return subj.get('a', 0.0)
+        cats = subj.get('categories', [])
+        if cats:
+            k = self.calc_categories_for(cats)
+            return (k['pts'] / k['ev'] * 100.0) if k['ev'] > 0 else 0.0
+        return float(subj.get('a', 0.0))
 
     def get_subject_progress(self, subj):
-        if subj.get('ph'):
-            return self.calc_categories()['ev']
-        return subj.get('p', 0.0)
+        cats = subj.get('categories', [])
+        if cats:
+            return self.calc_categories_for(cats)['ev']
+        return float(subj.get('p', 0.0))
 
     def get_general_avg(self):
         if not self.subjects:
@@ -338,7 +274,7 @@ class DataStore:
 
 TAB_MAP = {
     'home': 'home',
-    'calc': 'home',
+    'calc': 'calc',
     'diary': 'home',
     'progress': 'home',
     'remind': 'home',
@@ -346,7 +282,8 @@ TAB_MAP = {
     'detail': 'subjects',
     'schedule': 'schedule',
     'import_schedule': 'schedule',
-    'profile': 'profile'
+    'profile': 'home',
+    'login': 'home'
 }
 
 
@@ -369,6 +306,7 @@ class StudyMateApp(App):
         kv_dir = os.path.join(base_dir, 'kv')
         kv_files = [
             'welcome.kv',
+            'login.kv',
             'home.kv',
             'subjects.kv',
             'detail.kv',
@@ -391,6 +329,7 @@ class StudyMateApp(App):
 
         self.sm = ScreenManager(transition=SlideTransition())
         self.sm.add_widget(WelcomeScreen(name='welcome'))
+        self.sm.add_widget(LoginScreen(name='login'))
         self.sm.add_widget(HomeScreen(name='home'))
         self.sm.add_widget(SubjectsScreen(name='subjects'))
         self.sm.add_widget(DetailScreen(name='detail'))

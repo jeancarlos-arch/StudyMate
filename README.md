@@ -64,6 +64,7 @@ proyecto_movil/
 │
 ├── kv/                       # VISTAS DECLARATIVAS (.kv independientes)
 │   ├── welcome.kv            # Pantalla de bienvenida y presentación
+│   ├── login.kv              # Formulario de identificación/login de estudiante
 │   ├── home.kv               # Dashboard principal, resumen y accesos rápidos
 │   ├── subjects.kv           # Listado de materias y porcentajes evaluados
 │   ├── detail.kv             # Detalle de notas, categorías y cálculo predictivo
@@ -78,6 +79,7 @@ proyecto_movil/
 └── screens/                  # CONTROLADORES Y LÓGICA (.py independientes)
     ├── __init__.py           # Inicializador del paquete de pantallas
     ├── welcome_screen.py     # Lógica WelcomeScreen
+    ├── login_screen.py       # Lógica LoginScreen y captura de perfil
     ├── home_screen.py        # Lógica HomeScreen y actualización de resumen
     ├── subjects_screen.py    # Lógica SubjectsScreen y selección de asignatura
     ├── detail_screen.py      # Lógica DetailScreen y modales de notas/categorías
@@ -100,7 +102,7 @@ proyecto_movil/
    * `app.show_toast(mensaje)`: Despliega una alerta flotante temporal en la parte inferior.
 
 2. **Barra de Navegación Inferior (*Bottom Navigation Bar*):**
-   * Presente en todas las pantallas principales (`home`, `subjects`, `schedule`, `profile`).
+   * Presente en todas las pantallas principales (`home`, `subjects`, `schedule`, `calc`).
    * Resalta automáticamente la pestaña activa correspondiente.
 
 3. **Gestión de Estado Compartido (*DataStore*):**

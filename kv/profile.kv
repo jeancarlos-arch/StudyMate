@@ -41,7 +41,7 @@
 
                         # Avatar Circular
                         Label:
-                            text: "C"
+                            text: root.avatar_initial
                             font_size: '22sp'
                             bold: True
                             color: (0.063, 0.094, 0.153, 1)
@@ -58,14 +58,14 @@
                             orientation: 'vertical'
                             spacing: 2
                             Label:
-                                text: "[b]Camila Reyes[/b]"
+                                text: f"[b]{root.user_name}[/b]"
                                 markup: True
                                 font_size: '16sp'
                                 halign: 'left'
                                 valign: 'middle'
                                 text_size: self.size
                             Label:
-                                text: "Ingeniería en Sistemas · 3.er semestre"
+                                text: root.user_career_sem
                                 color: (0.627, 0.682, 0.753, 1)
                                 font_size: '12sp'
                                 halign: 'left'
@@ -73,6 +73,11 @@
                                 text_size: self.size
 
                 # Enlaces de Navegación
+                ProfileLinkCard:
+                    icon_text: "✏️"
+                    link_title: "Editar datos de estudiante / Login"
+                    on_release: root.navigate('login')
+
                 ProfileLinkCard:
                     icon_text: "🔔"
                     link_title: "Recordatorios"

@@ -1,0 +1,141 @@
+#:kivy 2.3.0
+
+<LoginScreen>:
+    name: 'login'
+    BoxLayout:
+        orientation: 'vertical'
+        canvas.before:
+            Color:
+                rgba: (0.063, 0.094, 0.153, 1) # --bg
+            Rectangle:
+                pos: self.pos
+                size: self.size
+
+        ScrollView:
+            do_scroll_x: False
+            BoxLayout:
+                orientation: 'vertical'
+                size_hint_y: None
+                height: self.minimum_height
+                padding: [24, 20]
+                spacing: 14
+
+                # Botón Volver
+                Button:
+                    text: "‹  Volver"
+                    size_hint: (None, None)
+                    size: ('90dp', '32dp')
+                    background_normal: ''
+                    background_color: (0, 0, 0, 0)
+                    color: (0.545, 0.718, 1.0, 1)
+                    font_size: '15sp'
+                    bold: True
+                    on_release: root.go_back()
+
+                # Encabezado con ícono
+                BoxLayout:
+                    orientation: 'vertical'
+                    size_hint_y: None
+                    height: '84dp'
+                    spacing: 4
+                    Label:
+                        text: "🎓"
+                        font_size: '42sp'
+                        size_hint_y: None
+                        height: '48dp'
+                        halign: 'center'
+                    Label:
+                        text: "[b]Registro de Estudiante[/b]"
+                        markup: True
+                        font_size: '22sp'
+                        color: (0.957, 0.965, 0.980, 1)
+                        size_hint_y: None
+                        height: '30dp'
+                        halign: 'center'
+
+                Label:
+                    text: "Personaliza tu horario, materias y seguimiento de notas ingresando tus datos académicos:"
+                    font_size: '13sp'
+                    color: (0.627, 0.682, 0.753, 1)
+                    halign: 'center'
+                    valign: 'middle'
+                    size_hint_y: None
+                    height: '40dp'
+                    text_size: (self.width, None)
+
+                # Formulario en Tarjeta
+                DarkCard:
+                    spacing: 10
+                    padding: [16, 16]
+
+                    # Campo Nombre
+                    Label:
+                        text: "Nombre y Apellido *"
+                        font_size: '13sp'
+                        bold: True
+                        color: (0.545, 0.718, 1.0, 1)
+                        size_hint_y: None
+                        height: '22dp'
+                        halign: 'left'
+                        valign: 'middle'
+                        text_size: self.size
+
+                    StyledTextInput:
+                        id: input_name
+                        hint_text: "Ej: Jomar Pérez"
+
+                    # Campo Carrera
+                    Label:
+                        text: "Carrera Universitaria *"
+                        font_size: '13sp'
+                        bold: True
+                        color: (0.545, 0.718, 1.0, 1)
+                        size_hint_y: None
+                        height: '22dp'
+                        halign: 'left'
+                        valign: 'middle'
+                        text_size: self.size
+
+                    StyledTextInput:
+                        id: input_career
+                        hint_text: "Ej: Ingeniería en Sistemas"
+
+                    # Campo Semestre
+                    Label:
+                        text: "Semestre *"
+                        font_size: '13sp'
+                        bold: True
+                        color: (0.545, 0.718, 1.0, 1)
+                        size_hint_y: None
+                        height: '22dp'
+                        halign: 'left'
+                        valign: 'middle'
+                        text_size: self.size
+
+                    StyledTextInput:
+                        id: input_semester
+                        hint_text: "Ej: 3.er semestre o 4to"
+
+                Widget:
+                    size_hint_y: None
+                    height: '6dp'
+
+                # Botón Guardar e Ingresar
+                PrimaryButton:
+                    text: "Guardar e Ingresar"
+                    on_release: root.submit_login()
+
+                # Botón Secundario Omitir
+                Button:
+                    text: "Omitir por ahora"
+                    size_hint_y: None
+                    height: '38dp'
+                    background_normal: ''
+                    background_color: (0, 0, 0, 0)
+                    color: (0.627, 0.682, 0.753, 1)
+                    font_size: '13sp'
+                    on_release: root.skip_login()
+
+                Widget:
+                    size_hint_y: None
+                    height: '20dp'

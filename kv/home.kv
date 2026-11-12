@@ -18,11 +18,11 @@
                 size_hint_y: None
                 height: self.minimum_height
                 padding: [20, 16]
-                spacing: 12
+                spacing: 14
 
-                # Saludo y fecha
+                # Encabezado: Saludo y Subtítulo de Estudiante
                 Label:
-                    text: "[b]Buenos días, Camila[/b]"
+                    text: f"[b]{root.greeting_text}[/b]"
                     markup: True
                     font_size: '24sp'
                     color: (0.957, 0.965, 0.980, 1)
@@ -33,19 +33,20 @@
                     text_size: self.size
 
                 Label:
-                    text: "Lunes 2 de noviembre · 10:45"
+                    text: root.student_subtitle
                     font_size: '13sp'
-                    color: (0.627, 0.682, 0.753, 1)
+                    color: (0.545, 0.718, 1.0, 1)
+                    bold: True
                     halign: 'left'
                     valign: 'top'
                     size_hint_y: None
                     height: '20dp'
                     text_size: self.size
 
-                # Tarjeta: En curso (Fondo Azul)
+                # Tarjeta 1: Clases de Hoy (Enlace a Horario)
                 RelativeLayout:
                     size_hint_y: None
-                    height: '115dp'
+                    height: '118dp'
                     BoxLayout:
                         orientation: 'vertical'
                         size_hint: (1, 1)
@@ -63,6 +64,7 @@
                             text: root.active_class_time
                             font_size: '11sp'
                             color: (0.063, 0.094, 0.153, 1)
+                            bold: True
                             halign: 'left'
                             size_hint_y: None
                             height: '16dp'
@@ -101,10 +103,10 @@
                         size_hint: (1, 1)
                         on_release: root.navigate('schedule')
 
-                # Tarjeta: Pendientes de hoy
+                # Tarjeta 2: Resumen Académico (Enlace a Materias)
                 RelativeLayout:
                     size_hint_y: None
-                    height: '95dp'
+                    height: '106dp'
                     BoxLayout:
                         orientation: 'vertical'
                         size_hint: (1, 1)
@@ -120,67 +122,20 @@
 
                         BoxLayout:
                             size_hint_y: None
-                            height: '22dp'
+                            height: '24dp'
                             Label:
-                                text: "[b]Pendientes de hoy[/b]"
+                                text: "[b]Promedio General[/b]"
                                 markup: True
                                 font_size: '14sp'
                                 halign: 'left'
                                 text_size: self.size
                             Label:
-                                text: f"[color=f2a65a][size=12sp]{root.reminders_count_text}[/size][/color]"
+                                text: f"[color=39c98a][b]{root.progress_avg_text}[/b][/color]"
                                 markup: True
                                 halign: 'right'
                                 size_hint_x: None
-                                width: '100dp'
-                                text_size: self.size
-
-                        Label:
-                            text: root.reminders_preview_text
-                            font_size: '12sp'
-                            color: (0.627, 0.682, 0.753, 1)
-                            halign: 'left'
-                            valign: 'middle'
-                            text_size: self.size
-
-                    Button:
-                        background_color: (0, 0, 0, 0)
-                        size_hint: (1, 1)
-                        on_release: root.navigate('remind')
-
-                # Tarjeta: Progreso del semestre
-                RelativeLayout:
-                    size_hint_y: None
-                    height: '100dp'
-                    BoxLayout:
-                        orientation: 'vertical'
-                        size_hint: (1, 1)
-                        padding: [16, 12]
-                        spacing: 6
-                        canvas.before:
-                            Color:
-                                rgba: (0.106, 0.149, 0.220, 1) # --sf
-                            RoundedRectangle:
-                                pos: self.pos
-                                size: self.size
-                                radius: [14]
-
-                        BoxLayout:
-                            size_hint_y: None
-                            height: '22dp'
-                            Label:
-                                text: "[b]Progreso del semestre[/b]"
-                                markup: True
-                                font_size: '14sp'
-                                halign: 'left'
-                                text_size: self.size
-                            Label:
-                                text: f"[color=39c98a][b]{root.progress_percent}%[/b][/color]"
-                                markup: True
-                                halign: 'right'
-                                size_hint_x: None
-                                width: '60dp'
-                                font_size: '15sp'
+                                width: '70dp'
+                                font_size: '18sp'
                                 text_size: self.size
 
                         CustomProgressBar:
@@ -188,8 +143,8 @@
                             bar_color: (0.224, 0.788, 0.541, 1)
 
                         Label:
-                            text: root.progress_avg_text
-                            font_size: '11sp'
+                            text: f"{root.subjects_count_text} · {root.progress_percent}% evaluado"
+                            font_size: '12sp'
                             color: (0.627, 0.682, 0.753, 1)
                             halign: 'left'
                             valign: 'middle'
@@ -200,23 +155,34 @@
                     Button:
                         background_color: (0, 0, 0, 0)
                         size_hint: (1, 1)
-                        on_release: root.navigate('progress')
+                        on_release: root.navigate('subjects')
 
-                # Grilla de accesos rápidos (Tiles)
+                # Título de Accesos Directos
+                Label:
+                    text: "[b]Funcionalidades principales[/b]"
+                    markup: True
+                    font_size: '15sp'
+                    color: (0.957, 0.965, 0.980, 1)
+                    halign: 'left'
+                    size_hint_y: None
+                    height: '22dp'
+                    text_size: self.size
+
+                # Grilla de Accesos Directos: Materias, Horario, Calculadora, Perfil
                 GridLayout:
-                    cols: 3
+                    cols: 2
                     size_hint_y: None
                     height: '170dp'
                     spacing: 10
 
                     TileButton:
                         icon_text: "📚"
-                        title_text: "Materias"
+                        title_text: "Mis Materias"
                         on_release: root.navigate('subjects')
 
                     TileButton:
                         icon_text: "📅"
-                        title_text: "Horario"
+                        title_text: "Mi Horario"
                         on_release: root.navigate('schedule')
 
                     TileButton:
@@ -225,18 +191,12 @@
                         on_release: root.navigate('calc')
 
                     TileButton:
-                        icon_text: "✎"
-                        title_text: "Diario"
-                        on_release: root.navigate('diary')
+                        icon_text: "👤"
+                        title_text: "Mi Perfil"
+                        on_release: root.navigate('profile')
 
-                    TileButton:
-                        icon_text: "📊"
-                        title_text: "Progreso"
-                        on_release: root.navigate('progress')
-
-                    TileButton:
-                        icon_text: "🔔"
-                        title_text: "Recordatorios"
-                        on_release: root.navigate('remind')
+                Widget:
+                    size_hint_y: None
+                    height: '10dp'
 
         NavBar:
